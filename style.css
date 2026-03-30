@@ -1,0 +1,85 @@
+/* ===== Reset ===== */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins, sans-serif;
+}
+
+/* ===== Full Screen Layout ===== */
+body{
+min-height:100vh;
+background:linear-gradient(135deg,#2e7d32,#66bb6a);
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+color:white;
+}
+
+/* ===== Full Screen Container ===== */
+.upload-container{
+width:100%;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+}
+
+/* ===== Title ===== */
+.upload-container h2{
+font-size:32px;
+margin-bottom:30px;
+}
+
+/* ===== Upload Button ===== */
+input[type="file"]{
+display:none;
+}
+
+.custom-file-btn{
+background:white;
+color:#2e7d32;
+padding:12px 30px;
+border-radius:6px;
+cursor:pointer;
+font-size:16px;
+margin-bottom:20px;
+}
+
+/* ===== Detect Button ===== */
+#detect-btn{
+background:#1b5e20;
+color:white;
+border:none;
+padding:12px 30px;
+border-radius:6px;
+cursor:pointer;
+margin-top:20px;
+}
+
+/* ===== Image Preview ===== */
+#preview-image{
+width:300px;
+margin-top:20px;
+border-radius:10px;
+display:none;
+}
+
+/* ===== Result ===== */
+#result{
+margin-top:25px;
+font-size:18px;
+font-weight:500;
+}
+
+/* ===== Footer ===== */
+.footer{
+position:absolute;
+bottom:20px;
+font-size:14px;
+opacity:0.8;
+}

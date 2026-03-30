@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Based Crop Disease Detection System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div id="bg-slider"></div>
+
+  <div class="page-wrapper">
+    <div class="upload-container">
+      <h2>🌿 AI Based 🌿<br>Crop Disease Detection System</h2>
+
+      <form id="upload-form" enctype="multipart/form-data">
+        <div class="file-upload">
+          <label for="file" class="custom-file-btn">Upload Image</label>
+          <input type="file" id="file" name="file" accept="image/*" required>
+        </div>
+
+        <div id="preview-container">
+          <img id="preview-image" src="#" alt="Preview">
+        </div>
+
+        <button type="submit" id="detect-btn" class="hidden-btn">🔍 Detect Disease</button>
+      </form>
+
+      <div id="result"></div>
+    </div>
+
+    <div class="footer">Developed by Vivek Singh, Vikas Yadev, Rahul Kumar & Adarsh Shukla</div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
