@@ -9,6 +9,6 @@ passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 python-multipart
 pillow
-tensorflow
+tensorflow==2.20.0
 numpy
 python-dotenv
