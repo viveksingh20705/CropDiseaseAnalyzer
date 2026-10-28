@@ -19,6 +19,9 @@ cd frontend
 npm install
 ```
 
+Copy `backend\.env.example` to `backend\.env` and set your MongoDB URI and a
+unique random JWT secret before starting the API. Never commit `backend\.env`.
+
 ## Start the project
 
 ### 1. Start MongoDB
@@ -72,3 +75,15 @@ Log in with:
 - Password: `Admin@123456`
 
 Open **Analyze** and upload a crop leaf image.
+
+## Deploy the frontend to GitHub Pages
+
+The `Deploy frontend to GitHub Pages` workflow builds and publishes the frontend
+when changes are pushed to `main`. In the repository settings, set
+**Settings → Pages → Build and deployment → Source** to **GitHub Actions**.
+The deployed frontend uses the existing Render API at
+`https://cropdiseaseanalyzer-100.onrender.com`; configure that backend to allow
+the GitHub Pages origin if its environment overrides the app defaults.
+
+The API also needs valid MongoDB credentials and a trained model file on its
+host for prediction requests. Do not commit credentials or model weights.

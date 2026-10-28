@@ -27,9 +27,19 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+frontend_origin = settings.frontend_origin.strip().rstrip("/")
+if frontend_origin and "://" not in frontend_origin:
+    frontend_origin = f"https://{frontend_origin}"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_origin, "http://127.0.0.1:5173"],
+    allow_origins=[
+        frontend_origin,
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://viveksingh20705.github.io",
+        "https://crop-disease-analyzer.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

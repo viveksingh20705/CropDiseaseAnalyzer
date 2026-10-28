@@ -34,7 +34,7 @@ export default function History() {
         {items.map((item) => (
           <article key={item.id} className="card flex flex-col gap-4 p-4 md:flex-row">
             <img
-              src={item.image_url}
+              src={`${axios.defaults.baseURL}${item.image_url}`}
               alt={`${item.crop} ${item.disease}`}
               className="h-36 w-full rounded-xl object-cover md:w-48"
             />

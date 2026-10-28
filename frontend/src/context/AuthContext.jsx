@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 const AuthContext = createContext(null);
 const TOKEN_KEY = "cda_token";
 
-axios.defaults.baseURL = "";
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "";
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
