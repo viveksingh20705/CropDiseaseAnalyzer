@@ -11,7 +11,7 @@ os.environ["TF_USE_LEGACY_KERAS"] = "1"
 import numpy as np
 from PIL import Image
 
-from tensorflow.keras.models import load_model
+from tf_keras.models import load_model
 
 BASE_DIR = Path(__file__).resolve().parent
 MODELS_DIR = BASE_DIR / "models"
