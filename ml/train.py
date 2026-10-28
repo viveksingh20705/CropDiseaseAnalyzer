@@ -6,12 +6,12 @@ import json
 import os
 from pathlib import Path
 
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
-
-os.environ["TF_USE_LEGACY_KERAS"] = "1"
 
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint

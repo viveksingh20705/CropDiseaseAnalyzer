@@ -6,6 +6,8 @@ import json
 import os
 from pathlib import Path
 
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
 import numpy as np
 from sklearn.metrics import (
     accuracy_score,
@@ -14,8 +16,6 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
 )
-
-os.environ["TF_USE_LEGACY_KERAS"] = "1"
 
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator

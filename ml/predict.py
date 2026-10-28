@@ -6,10 +6,10 @@ import json
 import os
 from pathlib import Path
 
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
 import numpy as np
 from PIL import Image
-
-os.environ["TF_USE_LEGACY_KERAS"] = "1"
 
 from tensorflow.keras.models import load_model
 
