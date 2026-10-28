@@ -1,4 +1,5 @@
-tensorflow>=2.15.0
+tensorflow>=2.20.0,<2.21.0
+tf-keras==2.20.1
 pillow
 numpy
 scikit-learn

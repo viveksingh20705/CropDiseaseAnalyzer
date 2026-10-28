@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import numpy as np
 from PIL import Image
+
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
 from tensorflow.keras.models import load_model
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -31,7 +35,7 @@ def load_artifacts():
         raise FileNotFoundError(
             f"Class map not found at {CLASSES_PATH}. Run `python train.py` first."
         )
-    _model = load_model(MODEL_PATH)
+    _model = load_model(MODEL_PATH, compile=False)
     _class_names = json.loads(CLASSES_PATH.read_text(encoding="utf-8"))
     return _model, _class_names
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import numpy as np
@@ -13,6 +14,9 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
 )
+
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
@@ -30,7 +34,7 @@ def main() -> None:
         raise FileNotFoundError("Train the model first so crop_disease_model.keras and classes.json exist.")
 
     class_names = json.loads(CLASSES_PATH.read_text(encoding="utf-8"))
-    model = load_model(MODEL_PATH)
+    model = load_model(MODEL_PATH, compile=False)
 
     datagen = ImageDataGenerator(rescale=1.0 / 255.0, validation_split=0.2)
     validation_generator = datagen.flow_from_directory(
