@@ -45,6 +45,10 @@ cd ml
 python train.py
 ```
 
+Training also exports `ml\models\crop_disease_savedmodel`, the TensorFlow
+SavedModel used by API inference. Keep this generated model directory with the
+backend deployment.
+
 ### 3. Start the backend
 
 In the same terminal, run:
@@ -85,5 +89,5 @@ The deployed frontend uses the existing Render API at
 `https://cropdiseaseanalyzer-100.onrender.com`; configure that backend to allow
 the GitHub Pages origin if its environment overrides the app defaults.
 
-The API also needs valid MongoDB credentials and a trained model file on its
-host for prediction requests. Do not commit credentials or model weights.
+The API also needs valid MongoDB credentials and the exported SavedModel on its
+host for prediction requests. Do not commit credentials.

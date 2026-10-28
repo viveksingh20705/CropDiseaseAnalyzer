@@ -10,34 +10,34 @@ os.environ["TF_USE_LEGACY_KERAS"] = "1"
 
 import numpy as np
 from PIL import Image
-
-from tf_keras.models import load_model
+import tensorflow as tf
 
 BASE_DIR = Path(__file__).resolve().parent
 MODELS_DIR = BASE_DIR / "models"
-MODEL_PATH = MODELS_DIR / "crop_disease_model.keras"
+MODEL_PATH = MODELS_DIR / "crop_disease_savedmodel"
 CLASSES_PATH = MODELS_DIR / "classes.json"
 IMAGE_SIZE = (224, 224)
 
-_model = None
+_predict_function = None
 _class_names: list[str] | None = None
 
 
 def load_artifacts():
-    global _model, _class_names
-    if _model is not None and _class_names is not None:
-        return _model, _class_names
-    if not MODEL_PATH.exists():
+    global _predict_function, _class_names
+    if _predict_function is not None and _class_names is not None:
+        return _predict_function, _class_names
+    if not MODEL_PATH.is_dir():
         raise FileNotFoundError(
-            f"Trained model not found at {MODEL_PATH}. Run `python train.py` first."
+            f"SavedModel not found at {MODEL_PATH}. Run `python train.py` first."
         )
     if not CLASSES_PATH.exists():
         raise FileNotFoundError(
             f"Class map not found at {CLASSES_PATH}. Run `python train.py` first."
         )
-    _model = load_model(MODEL_PATH, compile=False)
+    model = tf.saved_model.load(str(MODEL_PATH))
+    _predict_function = model.signatures["serving_default"]
     _class_names = json.loads(CLASSES_PATH.read_text(encoding="utf-8"))
-    return _model, _class_names
+    return _predict_function, _class_names
 
 
 def preprocess_image(image_path: str) -> np.ndarray:
@@ -55,9 +55,14 @@ def _format_prediction(label: str, probability: float) -> dict:
 
 
 def predict_crop_disease(image_path: str) -> dict:
-    model, class_names = load_artifacts()
+    predict_function, class_names = load_artifacts()
     batch = preprocess_image(image_path)
-    probabilities = model.predict(batch, verbose=0)[0]
+    input_name = next(iter(predict_function.structured_input_signature[1]))
+    output_name = next(iter(predict_function.structured_outputs))
+    prediction = predict_function(
+        **{input_name: tf.convert_to_tensor(batch)}
+    )[output_name]
+    probabilities = prediction.numpy()[0]
     ranked = np.argsort(probabilities)[::-1]
     top3_idx = ranked[: min(3, len(class_names))]
     top3 = [_format_prediction(class_names[i], probabilities[i]) for i in top3_idx]

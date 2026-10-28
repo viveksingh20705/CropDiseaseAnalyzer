@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 from pathlib import Path
 
 os.environ["TF_USE_LEGACY_KERAS"] = "1"
@@ -131,6 +132,7 @@ def main() -> None:
 
     model = build_model(num_classes)
     checkpoint_path = MODELS_DIR / "crop_disease_model.keras"
+    export_path = MODELS_DIR / "crop_disease_savedmodel"
     callbacks = [
         EarlyStopping(monitor="val_loss", patience=5, restore_best_weights=True),
         ModelCheckpoint(
@@ -149,6 +151,10 @@ def main() -> None:
     )
 
     model.save(checkpoint_path)
+    if export_path.exists():
+        shutil.rmtree(export_path)
+    model.save(str(export_path), include_optimizer=False, save_format="tf")
+    print(f"Saved TensorFlow inference model to {export_path}")
 
     val_loss, val_accuracy = model.evaluate(validation_generator, verbose=0)
     print(f"Validation loss: {val_loss:.4f}")
