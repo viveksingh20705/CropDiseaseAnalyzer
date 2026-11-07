@@ -1,4 +1,4 @@
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
 import DashboardLayout from "./components/DashboardLayout.jsx";
@@ -30,9 +30,11 @@ function ProtectedRoute({ children, adminOnly = false }) {
 
 export default function App() {
   const { user } = useAuth();
+  const { pathname } = useLocation();
+  const showNavbar = !user && pathname !== "/" && pathname !== "/login";
   return (
     <div className="app-root">
-      {!user && <Navbar />}
+      {showNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

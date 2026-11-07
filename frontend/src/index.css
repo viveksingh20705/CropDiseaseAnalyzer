@@ -369,7 +369,7 @@ body:has(.app-root > header):has(.login-page) { background: var(--page); color: 
 .app-root:has(.login-page) .login-page { color: var(--text); }
 .app-root:has(.login-page) .login-page .text-leaf-900 { color: var(--text); }
 .app-root:has(.login-page) .login-page .text-slate-600 { color: var(--text-secondary); }
-.app-root:has(.login-page) .login-card { border-color: var(--line); background: var(--surface); color: var(--text); }
+.app-root:has(.login-page) .login-card { border-color: color-mix(in srgb, var(--green) 38%, var(--line)); background: color-mix(in srgb, var(--green) 14%, transparent); color: var(--text); box-shadow: 0 16px 42px rgba(8, 124, 66, 0.12); backdrop-filter: blur(20px) saturate(145%); -webkit-backdrop-filter: blur(20px) saturate(145%); }
 .login-card label { color: var(--text); }
 .login-card input { border-color: var(--line); background: var(--surface-raised); color: var(--text); }
 .login-card input:focus { outline: 2px solid var(--green); outline-offset: 1px; }
@@ -381,6 +381,26 @@ body:has(.app-root > header):has(.login-page) { background: var(--page); color: 
 .login-tabs button.bg-white { background: var(--surface-raised); color: var(--green); }
 .login-tabs button:not(.bg-white) { color: var(--text-secondary); }
 .app-root:has(.login-page) .login-card .text-slate-500 { color: var(--text-muted); }
+
+/* Match the public landing page to the login page theme. */
+body:has(.app-root > header):has(.home-page) { background: var(--page); color: var(--text); }
+.app-root:has(.home-page) > header { border-color: var(--line); background: color-mix(in srgb, var(--sidebar) 93%, transparent); color: var(--text); }
+.app-root:has(.home-page), .app-root:has(.login-page) { min-height: 100vh; background: radial-gradient(ellipse at 14% 12%, color-mix(in srgb, var(--green) 14%, var(--page)), var(--page) 58%); }
+.home-page { color: var(--text); }
+.home-hero { border: 1px solid color-mix(in srgb, var(--green) 38%, var(--line)); background: color-mix(in srgb, var(--green) 14%, transparent); color: var(--text); box-shadow: 0 16px 42px rgba(8, 124, 66, 0.12); backdrop-filter: blur(20px) saturate(145%); -webkit-backdrop-filter: blur(20px) saturate(145%); }
+.home-kicker { color: var(--green); }
+.home-title { color: var(--text); }
+.home-description, .home-step p { color: var(--text-secondary); }
+.home-primary { display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--green-strong); background: var(--green-strong); color: #fff; }
+.home-primary:hover { background: var(--green); border-color: var(--green); }
+.home-secondary { display: inline-flex; align-items: center; justify-content: center; border-color: var(--line); color: var(--text); background: var(--surface); }
+.home-secondary:hover { background: var(--surface-raised); }
+.app-root:has(.home-page) .home-step { border-color: color-mix(in srgb, var(--green) 30%, var(--line)); background: color-mix(in srgb, var(--green) 10%, transparent); color: var(--text); box-shadow: 0 12px 32px rgba(8, 124, 66, 0.08); backdrop-filter: blur(16px) saturate(135%); -webkit-backdrop-filter: blur(16px) saturate(135%); }
+.home-step h2 { color: var(--green); }
+.public-title { margin: 0 auto 34px; text-align: center; }
+.public-title p { margin: 0 0 4px; color: var(--green); font-size: 12px; font-weight: 750; letter-spacing: 0.22em; text-transform: uppercase; }
+.public-title h1 { margin: 0; color: var(--text); font-size: clamp(30px, 5vw, 46px); font-weight: 760; letter-spacing: -0.045em; line-height: 1.12; }
+.login-content-grid { margin-top: 24px; }
 
 @media (min-width: 601px) and (max-width: 1100px) {
   .sidebar { width: 240px; padding-inline: 14px; }
