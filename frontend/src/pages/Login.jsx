@@ -24,7 +24,7 @@ export default function Login() {
       } else {
         await register(form.name, form.email, form.password);
       }
-      navigate("/analyze");
+      navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.detail || "Authentication failed. Check your credentials.");
     } finally {

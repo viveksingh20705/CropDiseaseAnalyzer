@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Home() {
   const { user } = useAuth();
+  if (user) return <Navigate to="/dashboard" replace />;
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
       <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-leaf-700 to-leaf-900 p-8 text-white md:p-12">

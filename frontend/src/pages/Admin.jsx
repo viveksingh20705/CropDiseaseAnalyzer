@@ -31,7 +31,7 @@ export default function Admin() {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
+    <div className="page-stack legacy-page">
       <h1 className="text-3xl font-bold text-leaf-900">Administration</h1>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map(([label, value]) => (

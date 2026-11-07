@@ -54,7 +54,7 @@ export default function Analyze() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
+    <div className="page-stack legacy-page">
       <h1 className="text-3xl font-bold text-leaf-900">Analyze a leaf</h1>
       <p className="mt-2 max-w-2xl text-slate-600">
         Drop a close-up photo of a symptomatic leaf. The backend stores the file, runs MobileNetV2, and returns

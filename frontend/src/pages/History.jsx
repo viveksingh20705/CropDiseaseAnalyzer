@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import PredictionImage from "../components/PredictionImage.jsx";
 
 export default function History() {
   const [items, setItems] = useState([]);
@@ -25,7 +26,7 @@ export default function History() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
+    <div className="page-stack legacy-page">
       <h1 className="text-3xl font-bold text-leaf-900">History</h1>
       <p className="mt-2 text-slate-600">Every uploaded leaf and its stored diagnosis.</p>
       {error && <p className="mt-4 text-rose-700">{error}</p>}
@@ -33,7 +34,7 @@ export default function History() {
         {items.length === 0 && <p className="text-slate-500">No analyses yet. Run one from the Analyze page.</p>}
         {items.map((item) => (
           <article key={item.id} className="card flex flex-col gap-4 p-4 md:flex-row">
-            <img
+            <PredictionImage
               src={`${axios.defaults.baseURL}${item.image_url}`}
               alt={`${item.crop} ${item.disease}`}
               className="h-36 w-full rounded-xl object-cover md:w-48"

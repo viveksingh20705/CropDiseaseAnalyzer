@@ -1,13 +1,18 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
+import DashboardLayout from "./components/DashboardLayout.jsx";
 import Admin from "./pages/Admin.jsx";
 import Analyze from "./pages/Analyze.jsx";
+import AskAI from "./pages/AskAI.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import History from "./pages/History.jsx";
 import Home from "./pages/Home.jsx";
+import { About, Help } from "./pages/Information.jsx";
 import Library from "./pages/Library.jsx";
 import Login from "./pages/Login.jsx";
+import Settings from "./pages/Settings.jsx";
+import Weather from "./pages/Weather.jsx";
 
 function ProtectedRoute({ children, adminOnly = false }) {
   const { user, loading, isAdmin } = useAuth();
@@ -20,56 +25,29 @@ function ProtectedRoute({ children, adminOnly = false }) {
   if (adminOnly && !isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
-  return children;
+  return children || <Outlet />;
 }
 
 export default function App() {
+  const { user } = useAuth();
   return (
-    <div className="min-h-screen">
-      <Navbar />
+    <div className="app-root">
+      {!user && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route
-          path="/analyze"
-          element={
-            <ProtectedRoute>
-              <Analyze />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/history"
-          element={
-            <ProtectedRoute>
-              <History />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/library"
-          element={
-            <ProtectedRoute>
-              <Library />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute adminOnly>
-              <Admin />
-            </ProtectedRoute>
-          }
-        />
+        <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/analyze" element={<Analyze />} />
+          <Route path="/history" element={<History />} />
+          <Route path="/library" element={<Library />} />
+          <Route path="/weather" element={<Weather />} />
+          <Route path="/ask-ai" element={<AskAI />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/help" element={<Help />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/admin" element={<ProtectedRoute adminOnly><Admin /></ProtectedRoute>} />
+        </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>

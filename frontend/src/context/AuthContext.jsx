@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 const AuthContext = createContext(null);
 const TOKEN_KEY = "cda_token";
@@ -60,9 +60,11 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const updateUser = useCallback((updatedUser) => setUser(updatedUser), []);
+
   const value = useMemo(
-    () => ({ token, user, loading, login, register, logout, isAdmin: user?.role === "admin" }),
-    [token, user, loading]
+    () => ({ token, user, loading, login, register, logout, updateUser, isAdmin: user?.role === "admin" }),
+    [token, user, loading, updateUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

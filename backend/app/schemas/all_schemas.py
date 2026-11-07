@@ -15,11 +15,22 @@ class UserLogin(BaseModel):
     password: str
 
 
+class UserProfileUpdate(BaseModel):
+    name: str = Field(min_length=2, max_length=80)
+    email: EmailStr
+
+
+class PasswordChange(BaseModel):
+    current_password: str = Field(max_length=128)
+    new_password: str = Field(min_length=8, max_length=128)
+
+
 class UserResponse(BaseModel):
     id: str
     name: str
     email: EmailStr
     role: str
+    avatar_url: Optional[str] = None
 
 
 class TokenResponse(BaseModel):

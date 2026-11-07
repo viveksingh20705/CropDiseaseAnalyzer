@@ -80,6 +80,13 @@ Log in with:
 
 Open **Analyze** and upload a crop leaf image.
 
+After signing in, use the sidebar to open the dashboard, prediction history,
+disease library, weather, crop guide, and account settings. The dashboard reads
+your saved predictions; profile and password changes are authenticated API
+operations. Weather uses browser location only after you request it, and the
+crop guide searches the disease information stored in MongoDB rather than
+returning generated medical or agricultural advice.
+
 ## Deploy the frontend to GitHub Pages
 
 The `Deploy frontend to GitHub Pages` workflow builds and publishes the frontend
