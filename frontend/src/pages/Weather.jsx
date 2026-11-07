@@ -9,11 +9,10 @@ import {
   LocateFixed,
   MapPin,
   RefreshCw,
-  Search,
   Sun,
   Wind,
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function weatherDetails(code) {
   if (code === 0) return ["Clear sky", Sun];
@@ -32,16 +31,13 @@ export default function Weather() {
   const [place, setPlace] = useState("");
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
-  const [searching, setSearching] = useState(false);
-  const [locationQuery, setLocationQuery] = useState("");
-  const [locations, setLocations] = useState([]);
-  const [locationError, setLocationError] = useState("");
+  const locationRequested = useRef(false);
 
-  const fetchWeather = async (latitude, longitude, locationName) => {
+  const fetchWeather = useCallback(async (latitude, longitude) => {
     setLoading(true);
     setStatus("");
     setWeather(null);
-    setPlace(locationName);
+    setPlace("Finding your city…");
     try {
       const params = new URLSearchParams({
         latitude: String(latitude),
@@ -53,124 +49,73 @@ export default function Weather() {
       if (!response.ok) throw new Error("Weather service is temporarily unavailable.");
       const data = await response.json();
       setWeather(data.current);
-      setLocations([]);
-      setLocationError("");
     } catch (error) {
-      setStatus(error.message || "Could not load weather for this location.");
+      setStatus(error.message || "Could not load weather for your location.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const locationParams = new URLSearchParams({
+        latitude: String(latitude),
+        longitude: String(longitude),
+        localityLanguage: "en",
+      });
+      const locationResponse = await fetch(
+        `https://api.bigdatacloud.net/data/reverse-geocode-client?${locationParams}`
+      );
+      if (!locationResponse.ok) throw new Error("Location lookup failed.");
+      const location = await locationResponse.json();
+      const city = location.city || location.locality;
+      const name = [city, location.principalSubdivision, location.countryName]
+        .filter((value, index, values) => value && values.indexOf(value) === index)
+        .join(", ");
+      if (name) setPlace(name);
+      else {
+        setPlace("Your current location");
+        setStatus("Weather loaded, but your city name could not be identified.");
+      }
+    } catch {
+      setPlace("Your current location");
+      setStatus("Weather loaded, but your city name could not be identified.");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const searchLocations = async (event) => {
-    event.preventDefault();
-    const query = locationQuery.trim();
-    if (!query) {
-      setLocationError("Enter a city or town to search.");
-      setLocations([]);
-      return;
-    }
-    setSearching(true);
-    setLocationError("");
-    setLocations([]);
-    try {
-      const params = new URLSearchParams({
-        name: query,
-        count: "8",
-        language: "en",
-        format: "json",
-      });
-      const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?${params}`);
-      if (!response.ok) throw new Error("Location search is temporarily unavailable.");
-      const data = await response.json();
-      const matches = data.results || [];
-      if (!matches.length) {
-        setLocationError("No matching city or town found. Try another spelling.");
-        return;
-      }
-      if (matches.length === 1) {
-        const match = matches[0];
-        await fetchWeather(match.latitude, match.longitude, [match.name, match.admin1, match.country].filter(Boolean).join(", "));
-        return;
-      }
-      setLocations(matches);
-    } catch (error) {
-      setLocationError(error.message || "Could not search for that location.");
-    } finally {
-      setSearching(false);
-    }
-  };
-
-  const chooseLocation = (location) => {
-    fetchWeather(
-      location.latitude,
-      location.longitude,
-      [location.name, location.admin1, location.country].filter(Boolean).join(", ")
-    );
-  };
-
-  const loadWeather = () => {
+  const loadWeather = useCallback(() => {
     if (!navigator.geolocation) {
-      setStatus("Location access is unavailable. Search for your city instead.");
+      setStatus("Location access is unavailable in this browser.");
       return;
     }
     setLoading(true);
     setStatus("");
     navigator.geolocation.getCurrentPosition(({ coords }) => {
-      fetchWeather(coords.latitude, coords.longitude, "Near your current location");
+      fetchWeather(coords.latitude, coords.longitude);
     }, (error) => {
       setStatus(error.code === 1
-        ? "Location access was denied. Search for Gorakhpur or another city instead."
-        : "Could not determine your location. Search for your city instead.");
+        ? "Location permission was denied. Allow location access in your browser and refresh this page."
+        : "Could not determine your current location. Check your device location settings and try again.");
       setLoading(false);
     }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 });
-  };
+  }, [fetchWeather]);
+
+  useEffect(() => {
+    if (locationRequested.current) return;
+    locationRequested.current = true;
+    loadWeather();
+  }, [loadWeather]);
 
   const [condition, WeatherIcon] = weather ? weatherDetails(weather.weather_code) : ["", CloudSun];
 
   return (
     <div className="page-stack">
       <div className="page-heading-row">
-        <div><p className="eyebrow">LOCAL CONDITIONS</p><h1>Weather</h1><p className="page-subtitle">Search for your city or use your device location.</p></div>
+        <div><p className="eyebrow">LOCAL CONDITIONS</p><h1>Weather</h1><p className="page-subtitle">Current weather at your device’s location.</p></div>
         <button type="button" className="button button-secondary" onClick={loadWeather} disabled={loading}>
-          <LocateFixed size={16} className={loading ? "spin" : ""} /> Use my location
+          <RefreshCw size={16} className={loading ? "spin" : ""} /> Refresh
         </button>
       </div>
-      <section className="weather-search-panel">
-        <form className="weather-search-form" onSubmit={searchLocations}>
-          <label htmlFor="weather-location"><MapPin size={16} /> Search for your city</label>
-          <div className="weather-search-controls">
-            <input
-              id="weather-location"
-              type="search"
-              autoComplete="address-level2"
-              placeholder="For example, Gorakhpur"
-              value={locationQuery}
-              onChange={(event) => setLocationQuery(event.target.value)}
-            />
-            <button type="submit" className="button button-primary" disabled={searching || loading}>
-              <Search size={16} /> {searching ? "Searching…" : "Search"}
-            </button>
-          </div>
-        </form>
-        {locationError && <p className="weather-search-message" role="alert">{locationError}</p>}
-        {locations.length > 0 && (
-          <div className="weather-location-results" aria-label="Choose a matching location">
-            {locations.map((location) => (
-              <button
-                type="button"
-                key={`${location.id}-${location.latitude}-${location.longitude}`}
-                onClick={() => chooseLocation(location)}
-                disabled={loading}
-              >
-                <MapPin size={16} />
-                <span><strong>{location.name}</strong><small>{[location.admin1, location.country].filter(Boolean).join(", ")}</small></span>
-                <span className="location-result-select">View weather</span>
-              </button>
-            ))}
-          </div>
-        )}
-      </section>
       <section className="weather-card">
         {weather ? (
           <>
@@ -188,13 +133,13 @@ export default function Weather() {
           </>
         ) : (
           <div className="weather-empty">
-            <span className="weather-empty-icon"><CloudSun size={31} /></span>
-            <h2>Weather for your location</h2>
-            <p>Search for your city above, or share your device location to view current temperature, humidity, wind and precipitation. Coordinates aren’t saved.</p>
+            <span className="weather-empty-icon">{loading ? <LocateFixed size={31} className="spin" /> : <CloudSun size={31} />}</span>
+            <h2>{loading ? "Finding your location…" : "Weather for your location"}</h2>
+            <p>{loading
+              ? "Getting your device location and current local conditions."
+              : "Allow location access to see current temperature, humidity, wind and precipitation. Your coordinates aren’t saved."}</p>
             {status && <div className="notice notice-error">{status}</div>}
-            <button type="button" className="button button-primary" onClick={loadWeather} disabled={loading}>
-              <MapPin size={16} /> {loading ? "Finding your location…" : "Get local weather"}
-            </button>
+            {!loading && <button type="button" className="button button-primary" onClick={loadWeather}><LocateFixed size={16} /> Try location again</button>}
           </div>
         )}
       </section>

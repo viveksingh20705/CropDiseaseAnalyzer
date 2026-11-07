@@ -232,23 +232,6 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
 .quick-action:hover { border-color: var(--green); }
 
 /* Weather and knowledge guide */
-.weather-search-panel { display: grid; gap: 11px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
-.weather-search-form { display: grid; gap: 9px; }
-.weather-search-form > label { display: flex; align-items: center; gap: 7px; color: var(--text-secondary); font-size: 11px; font-weight: 650; }
-.weather-search-form > label svg { color: var(--green); }
-.weather-search-controls { display: flex; gap: 9px; }
-.weather-search-controls input { min-width: 0; min-height: 40px; flex: 1; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; outline: none; background: var(--surface-muted); color: var(--text); font-size: 12px; }
-.weather-search-controls input:focus { border-color: var(--green); }
-.weather-search-controls input::placeholder { color: var(--text-muted); }
-.weather-search-message { margin: 0; color: var(--danger); font-size: 11px; }
-.weather-location-results { display: grid; gap: 6px; max-height: 240px; overflow-y: auto; }
-.weather-location-results > button { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-muted); color: var(--text-secondary); text-align: left; }
-.weather-location-results > button:hover:not(:disabled) { border-color: var(--green); }
-.weather-location-results > button > svg { flex: 0 0 auto; color: var(--green); }
-.weather-location-results > button > span:nth-child(2) { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 2px; }
-.weather-location-results strong { color: var(--text); font-size: 11px; }
-.weather-location-results small { color: var(--text-muted); font-size: 10px; }
-.location-result-select { color: var(--green); font-size: 10px; font-weight: 650; }
 .weather-card { overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
 .weather-main { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: clamp(18px, 5vw, 64px); padding: 34px clamp(20px, 5vw, 46px); background: linear-gradient(110deg, rgba(20, 162, 97, 0.16), rgba(54, 133, 186, 0.08)); }
 .weather-place { display: inline-flex; align-items: center; gap: 5px; color: var(--text-muted); font-size: 11px; }
@@ -448,10 +431,6 @@ body:has(.app-root > header) { background: #f8fafc; color: #0f172a; }
   .status-tag { font-size: 8px; }
   .quick-actions { padding: 15px; }
   .weather-main { grid-template-columns: 1fr auto; gap: 8px; padding: 24px 18px; }
-  .weather-search-panel { padding: 13px; }
-  .weather-search-controls { gap: 6px; }
-  .weather-search-controls .button { padding-inline: 10px; font-size: 10px; }
-  .location-result-select { display: none; }
   .weather-main-icon { display: none; }
   .weather-temp { font-size: 46px; }
   .weather-details { grid-template-columns: 1fr; padding: 13px; }
