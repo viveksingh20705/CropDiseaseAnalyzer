@@ -4,7 +4,7 @@ const ThemeContext = createContext(null);
 const THEME_KEY = "cda_theme";
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => localStorage.getItem(THEME_KEY) || "dark");
+  const [theme, setTheme] = useState(() => localStorage.getItem(THEME_KEY) || "light");
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;

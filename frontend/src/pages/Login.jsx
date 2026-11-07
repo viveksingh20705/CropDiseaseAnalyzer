@@ -1,3 +1,4 @@
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -7,6 +8,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -33,7 +35,7 @@ export default function Login() {
   };
 
   return (
-    <div className="mx-auto grid min-h-[70vh] max-w-5xl items-center gap-10 px-4 py-10 md:grid-cols-2">
+    <div className="login-page mx-auto grid min-h-[70vh] max-w-5xl items-center gap-10 px-4 py-10 md:grid-cols-2">
       <div>
         <p className="text-sm font-semibold uppercase tracking-wide text-leaf-600">Field diagnostics</p>
         <h1 className="mt-2 text-4xl font-bold text-leaf-900">Identify crop diseases from a leaf photo.</h1>
@@ -45,8 +47,8 @@ export default function Login() {
           Back to overview
         </Link>
       </div>
-      <form onSubmit={onSubmit} className="card p-6">
-        <div className="mb-4 flex rounded-xl bg-slate-100 p-1">
+      <form onSubmit={onSubmit} className="card login-card p-6">
+        <div className="login-tabs mb-4 flex rounded-xl bg-slate-100 p-1">
           {["login", "register"].map((item) => (
             <button
               key={item}
@@ -85,15 +87,25 @@ export default function Login() {
         </label>
         <label className="mb-4 block text-sm font-medium">
           Password
-          <input
-            type="password"
-            name="password"
-            value={form.password}
-            onChange={onChange}
-            required
-            minLength={8}
-            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2"
-          />
+          <span className="login-password-field mt-1">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={form.password}
+              onChange={onChange}
+              required
+              minLength={8}
+              className="w-full rounded-xl border border-slate-200 px-3 py-2"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((visible) => !visible)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-pressed={showPassword}
+            >
+              {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+            </button>
+          </span>
         </label>
         {error && <p className="mb-3 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>}
         <button

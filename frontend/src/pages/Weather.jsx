@@ -14,6 +14,13 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+const MAX_LOCATION_ACCURACY_METERS = 20_000;
+const GORAKHPUR_LOCATION = {
+  latitude: 26.7606,
+  longitude: 83.3732,
+  label: "Gorakhpur, Uttar Pradesh, India (fallback)",
+};
+
 function weatherDetails(code) {
   if (code === 0) return ["Clear sky", Sun];
   if ([1, 2].includes(code)) return ["Partly cloudy", CloudSun];
@@ -33,7 +40,7 @@ export default function Weather() {
   const [loading, setLoading] = useState(false);
   const locationRequested = useRef(false);
 
-  const fetchWeather = useCallback(async (latitude, longitude) => {
+  const fetchWeather = useCallback(async (latitude, longitude, placeName = "") => {
     setLoading(true);
     setStatus("");
     setWeather(null);
@@ -51,6 +58,12 @@ export default function Weather() {
       setWeather(data.current);
     } catch (error) {
       setStatus(error.message || "Could not load weather for your location.");
+      setLoading(false);
+      return;
+    }
+
+    if (placeName) {
+      setPlace(placeName);
       setLoading(false);
       return;
     }
@@ -83,22 +96,28 @@ export default function Weather() {
     }
   }, []);
 
+  const fetchFallbackWeather = useCallback(
+    () => fetchWeather(GORAKHPUR_LOCATION.latitude, GORAKHPUR_LOCATION.longitude, GORAKHPUR_LOCATION.label),
+    [fetchWeather]
+  );
+
   const loadWeather = useCallback(() => {
     if (!navigator.geolocation) {
-      setStatus("Location access is unavailable in this browser.");
+      fetchFallbackWeather();
       return;
     }
     setLoading(true);
     setStatus("");
     navigator.geolocation.getCurrentPosition(({ coords }) => {
-      fetchWeather(coords.latitude, coords.longitude);
-    }, (error) => {
-      setStatus(error.code === 1
-        ? "Location permission was denied. Allow location access in your browser and refresh this page."
-        : "Could not determine your current location. Check your device location settings and try again.");
-      setLoading(false);
-    }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 });
-  }, [fetchWeather]);
+      if (coords.accuracy > MAX_LOCATION_ACCURACY_METERS) {
+        fetchFallbackWeather();
+      } else {
+        fetchWeather(coords.latitude, coords.longitude);
+      }
+    }, () => {
+      fetchFallbackWeather();
+    }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
+  }, [fetchFallbackWeather, fetchWeather]);
 
   useEffect(() => {
     if (locationRequested.current) return;
@@ -111,7 +130,7 @@ export default function Weather() {
   return (
     <div className="page-stack">
       <div className="page-heading-row">
-        <div><p className="eyebrow">LOCAL CONDITIONS</p><h1>Weather</h1><p className="page-subtitle">Current weather at your device’s location.</p></div>
+        <div><p className="eyebrow">LOCAL CONDITIONS</p><h1>Weather</h1><p className="page-subtitle">Uses precise device location, or Gorakhpur if location is unavailable.</p></div>
         <button type="button" className="button button-secondary" onClick={loadWeather} disabled={loading}>
           <RefreshCw size={16} className={loading ? "spin" : ""} /> Refresh
         </button>

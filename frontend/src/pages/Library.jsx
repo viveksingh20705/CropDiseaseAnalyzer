@@ -23,7 +23,7 @@ export default function Library() {
       <p className="mt-2 text-slate-600">Reference crops and management notes seeded into MongoDB.</p>
       <div className="mt-6 flex flex-wrap gap-2">
         {crops.map((crop) => (
-          <span key={crop.id} className="rounded-full bg-leaf-50 px-3 py-1 text-sm text-leaf-800">
+          <span key={crop.id} className="crop-tag rounded-full bg-leaf-50 px-3 py-1 text-sm text-leaf-800">
             {crop.name}
           </span>
         ))}
