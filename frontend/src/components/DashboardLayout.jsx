@@ -1,26 +1,29 @@
-import { Leaf, Menu } from "lucide-react";
+import { Leaf } from "lucide-react";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar.jsx";
 
 export default function DashboardLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className={`dashboard-layout${collapsed ? " sidebar-collapsed" : ""}`}>
+    <div className="dashboard-layout">
       <Sidebar
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
-        collapsed={collapsed}
-        onToggleCollapsed={() => setCollapsed((value) => !value)}
       />
       <div className="dashboard-main">
         <header className="mobile-topbar">
-          <button type="button" className="mobile-menu-button" onClick={() => setMobileOpen(true)} aria-label="Open navigation">
-            <Menu size={21} />
+          <button
+            type="button"
+            className="mobile-brand"
+            onClick={() => setMobileOpen((value) => !value)}
+            aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={mobileOpen}
+          >
+            <span className="brand-mark"><Leaf size={15} /></span>
+            <span>Crop Disease Analyzer</span>
           </button>
-          <div className="mobile-brand"><span className="brand-mark"><Leaf size={15} /></span>Crop Disease Analyzer</div>
         </header>
         <main className="dashboard-content">
           <Outlet />

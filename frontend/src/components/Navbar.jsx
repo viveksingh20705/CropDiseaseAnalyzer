@@ -1,6 +1,6 @@
-import { Leaf, Menu, X } from "lucide-react";
-import { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Leaf, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
 const linkClass = ({ isActive }) =>
@@ -10,8 +10,14 @@ const linkClass = ({ isActive }) =>
 
 export default function Navbar() {
   const { user, logout, isAdmin } = useAuth();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const isMinimalHeader = pathname === "/" || pathname === "/login";
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   const links = [
     { to: "/", label: "Home" },
@@ -33,13 +39,39 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link to="/" className="flex items-center gap-2 font-semibold text-leaf-700">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-leaf-600 text-white">
-            <Leaf size={18} />
-          </span>
-          Crop Disease Analyzer
-        </Link>
-        <nav className="hidden items-center gap-1 md:flex">
+        {isMinimalHeader ? (
+          <div className="navbar-brand-link flex items-center gap-2 font-semibold text-leaf-700">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-leaf-600 text-white">
+              <Leaf size={18} />
+            </span>
+            Crop Disease Analyzer
+          </div>
+        ) : (
+          <Link to="/" className="navbar-brand-link flex items-center gap-2 font-semibold text-leaf-700">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-leaf-600 text-white">
+              <Leaf size={18} />
+            </span>
+            Crop Disease Analyzer
+          </Link>
+        )}
+        {isMinimalHeader ? (
+          <div className="mobile-brand">
+            <span className="brand-mark"><Leaf size={16} /></span>
+            <span>Crop Disease Analyzer</span>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="mobile-brand"
+            onClick={() => setOpen((value) => !value)}
+            aria-label={open ? "Close navigation" : "Open navigation"}
+            aria-expanded={open}
+          >
+            <span className="brand-mark"><Leaf size={16} /></span>
+            <span>Crop Disease Analyzer</span>
+          </button>
+        )}
+        {!isMinimalHeader && <nav className="navbar-links">
           {user &&
             links.map((link) => (
               <NavLink key={link.to} to={link.to} className={linkClass} end={link.to === "/"}>
@@ -59,18 +91,23 @@ export default function Navbar() {
               Login
             </NavLink>
           )}
-        </nav>
+        </nav>}
+      </div>
+      {!isMinimalHeader && <>
         <button
           type="button"
-          className="rounded-lg p-2 text-slate-700 md:hidden"
-          onClick={() => setOpen((value) => !value)}
-          aria-label="Toggle menu"
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
-      </div>
-      {open && (
-        <div className="space-y-1 border-t border-slate-100 px-4 py-3 md:hidden">
+          className={`public-nav-backdrop${open ? " open" : ""}`}
+          onClick={() => setOpen(false)}
+          aria-label="Close navigation"
+          tabIndex={open ? 0 : -1}
+        />
+        <nav className={`public-nav-drawer${open ? " open" : ""}`} aria-label="Mobile navigation" aria-hidden={!open}>
+          <div className="public-nav-heading">
+            <span>Navigation</span>
+            <button type="button" onClick={() => setOpen(false)} aria-label="Close navigation" tabIndex={open ? 0 : -1}>
+              <X size={19} />
+            </button>
+          </div>
           {user &&
             links.map((link) => (
               <NavLink
@@ -79,21 +116,22 @@ export default function Navbar() {
                 className={linkClass}
                 end={link.to === "/"}
                 onClick={() => setOpen(false)}
+                tabIndex={open ? 0 : -1}
               >
                 {link.label}
               </NavLink>
             ))}
           {user ? (
-            <button type="button" onClick={onLogout} className="block w-full rounded-lg px-3 py-2 text-left text-sm text-rose-700">
+            <button type="button" onClick={onLogout} className="block w-full rounded-lg px-3 py-2 text-left text-sm text-rose-700" tabIndex={open ? 0 : -1}>
               Logout
             </button>
           ) : (
-            <NavLink to="/login" className={linkClass} onClick={() => setOpen(false)}>
+            <NavLink to="/login" className={linkClass} onClick={() => setOpen(false)} tabIndex={open ? 0 : -1}>
               Login
             </NavLink>
           )}
-        </div>
-      )}
+        </nav>
+      </>}
     </header>
   );
 }

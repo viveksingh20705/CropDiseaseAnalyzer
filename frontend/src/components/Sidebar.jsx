@@ -7,14 +7,12 @@ import {
   LayoutDashboard,
   Leaf,
   LogOut,
-  Menu,
   MessageCircle,
   Moon,
   ScanLine,
   Settings,
   ShieldCheck,
   Sun,
-  X,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -46,7 +44,7 @@ function Avatar({ user, className = "" }) {
   );
 }
 
-export default function Sidebar({ open, onClose, collapsed, onToggleCollapsed }) {
+export default function Sidebar({ open, onClose }) {
   const { user, logout, isAdmin } = useAuth();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
@@ -63,18 +61,12 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapsed })
   return (
     <>
       {open && <button className="sidebar-backdrop" onClick={onClose} aria-label="Close navigation" />}
-      <aside className={`sidebar${open ? " mobile-open" : ""}${collapsed ? " collapsed" : ""}`}>
+      <aside className={`sidebar${open ? " mobile-open" : ""}`}>
         <div className="sidebar-brand">
           <NavLink to="/dashboard" className="brand-lockup" onClick={onClose}>
             <span className="brand-mark"><Leaf size={19} /></span>
             <span className="brand-name">Crop Disease<span>Analyzer</span></span>
           </NavLink>
-          <button className="sidebar-icon-button mobile-close" onClick={onClose} aria-label="Close navigation">
-            <X size={19} />
-          </button>
-          <button className="sidebar-icon-button collapse-button" onClick={onToggleCollapsed} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}>
-            <Menu size={18} />
-          </button>
         </div>
 
         <NavLink to="/settings" className="profile-summary" onClick={onClose}>
